@@ -1,46 +1,32 @@
-import math
-import numpy as np
-import matplotlib.pyplot as plt
-
-#Valores iniciales
-r0 = float(1.6)
-Tinf = float(7.2)
-Tincubacion = int(3)
-Tintensiva = int(14)
-Rinfectados = float(0.2657)
-Rsobrevivientes = float(0.3)
-Dpositivos = int(5)
-
-def runge_kutta(y, x, dx, f):
-    """ y is the initial value for y
-        x is the initial value for x
-        dx is the time step in x
-        f is derivative of function y(t)
-    """
-    k1 = dx * f(y, t)
-    k2 = dx * f(y + 0.5 * k1, x + 0.5 * dx)
-    k3 = dx * f(y + 0.5 * k2, x + 0.5 * dx)
-    k4 = dx * f(y + k3, x + dx)
-    return y + (k1 + 2 * k2 + 2 * k3 + k4) / 6.
-
-
-if __name__=='__main__':
-    t = float(0)
-    y = float(1)
-    dt = float(1)
-    ys, ts = [], []
-
+## module run_kut4
+''' X,Y = integrar(F,x,y,xStop,h).
+    4th-order Runge-Kutta method for solving the
+    initial value problem {y}' = {F(x,{y})}, where
+    {y} = {y[0],y[1],...y[n-1]}.
+    x,y   = initial conditions
+    xStop = terminal value of x
+    h     = increment of x used in integration
+    F     = user-supplied function that returns the
+            array F(x,y) = {y'[0],y'[1],...,y'[n-1]}.
+'''
+from numpy import array
+def integrar(F,x,y,xStop,h):
     
-    while t <= 10:
-        y = runge_kutta(y, t, dt, func)
-        t += dt
-        ys.append(y)
-        ts.append(t)
-
-    exact = [(t ** 2 + 4) ** 2 / 16. for t in ts]
-    plt.plot(ts, ys, label='runge_kutta')
-    plt.plot(ts, exact, label='exact')
-    plt.legend()
-    plt.show()
-    error = np.array(exact) - np.array(ys)
-    print("max error {:.5f}".format(max(error)))
+    def run_kut4(F,x,y,h):
+        K0 = h*F(x,y)
+        K1 = h*F(x + h/2.0, y + K0/2.0)
+        K2 = h*F(x + h/2.0, y + K1/2.0)
+        K3 = h*F(x + h, y + K2)
+        return (K0 + 2.0*K1 + 2.0*K2 + K3)/6.0    
+    
+    X = []
+    Y = []
+    X.append(x)
+    Y.append(y)
+    while x < xStop:
+        h = min(h,xStop - x)
+        y = y + run_kut4(F,x,y,h)
+        x = x + h
+        X.append(x)
+        Y.append(y)
+    return array(X),array(Y)
