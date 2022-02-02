@@ -2,6 +2,15 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 
+#Valores iniciales
+r0 = float(1.6)
+Tinf = float(7.2)
+Tincubacion = int(3)
+Tintensiva = int(14)
+Rinfectados = float(0.2657)
+Rsobrevivientes = float(0.3)
+Dpositivos = int(5)
+
 def runge_kutta(y, x, dx, f):
     """ y is the initial value for y
         x is the initial value for x
@@ -14,13 +23,14 @@ def runge_kutta(y, x, dx, f):
     k4 = dx * f(y + k3, x + dx)
     return y + (k1 + 2 * k2 + 2 * k3 + k4) / 6.
 
+
 if __name__=='__main__':
     t = float(0)
     y = float(1)
     dt = float(1)
     ys, ts = [], []
-    def func(y, t):
-        return t * math.sqrt(y)
+
+    
     while t <= 10:
         y = runge_kutta(y, t, dt, func)
         t += dt
